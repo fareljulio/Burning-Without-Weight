@@ -1,6 +1,6 @@
 _**Fire Behavior Across Gravity**_
 
-Live app: <add link> Demo video: <add link> Built for NASA Space Apps 2026, challenge: <add challenge name> Team: SAGUWW
+Live app: (https://burning-without-weight.streamlit.app/) | Demo video: <add link> | Built for NASA Space Apps 2026, challenge: Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion Data | Team: SAGUWW
 
 **Why we made this**
 
