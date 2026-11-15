@@ -11,6 +11,17 @@ DATA = {
     0.16: {"residence": 0.029, "soot": 13.8, "label": "Moon"},
     0.38: {"residence": 0.021, "soot": 12.7, "label": "Mars"},
 }
+
+# If the paper has a measured 1 g row, fill it in here and it becomes a normal data point:
+# EARTH_ROW = {"residence": 0.0, "soot": 0.0}
+EARTH_ROW = None
+if EARTH_ROW:
+    DATA[1.0] = {**EARTH_ROW, "label": "Earth (1 g)"}
+
+# Literature only (different experiments, jet flames): peak soot in microgravity is about
+# 2-4x the 1 g value, so 1 g is roughly 25-50% of the 0 g value.
+LIT_SOOT_RATIO = (2, 4)
+
 GS = sorted(DATA.keys())
 GMAX = GS[-1]
 SOURCE_URL = "https://www.sciencedirect.com/science/article/pii/S1540748926003421"
@@ -99,6 +110,14 @@ def relative_fig():
                          text=[f"{v:.0f}%" for v in res], textposition="outside"))
     fig.add_trace(go.Bar(x=labels, y=soot, name="Peak soot volume fraction", marker_color="#444444",
                          text=[f"{v:.0f}%" for v in soot], textposition="outside"))
+    if not EARTH_ROW:
+        lo, hi = 100 / LIT_SOOT_RATIO[1], 100 / LIT_SOOT_RATIO[0]
+        mid = (lo + hi) / 2
+        fig.add_trace(go.Bar(x=["Earth (1 g)*"], y=[mid], name="Peak soot, literature range",
+                             marker_color="rgba(68,68,68,0.35)", marker_line_color="#444444",
+                             marker_line_width=2,
+                             error_y=dict(type="data", array=[hi - mid], arrayminus=[mid - lo], visible=True),
+                             text=[f"{lo:.0f}-{hi:.0f}%"], textposition="outside"))
     fig.update_layout(title="Compared with microgravity (0g = 100%)", barmode="group",
                       yaxis=dict(range=[0, 125], title="% of 0g value"), height=300,
                       margin=dict(l=10, r=10, t=50, b=10), legend=dict(orientation="h", y=-0.2))
@@ -143,6 +162,9 @@ def render(g, ph, tag):
                         use_container_width=True, key=tag + "b")
         c3, c4, c5 = st.columns([2, 1, 1])
         c3.plotly_chart(relative_fig(), use_container_width=True, key=tag + "c")
+        if not EARTH_ROW:
+            c3.caption("*Earth (1 g) is a literature range for peak soot from different experiments (jet flames), "
+                       "not a measurement from this dataset. No 1 g value for residence time is shown.")
         if g <= GMAX:
             c4.plotly_chart(gauge_fig("Residence time vs 0g", interp("residence", g) / DATA[0.0]["residence"] * 100, "#ff7f0e"),
                             use_container_width=True, key=tag + "d")
@@ -171,7 +193,7 @@ b[2].button("Mars (0.38 g)", on_click=set_g, args=(0.38,))
 b[3].button("Earth (1 g)", on_click=set_g, args=(1.0,))
 g = st.slider("Gravity (g)", 0.0, 1.0, step=0.01, key="g")
 
-play = st.button("Play sweep 0 to 0.38 g")
+play = st.button(f"Play sweep 0 to {GMAX} g")
 ph = st.empty()
 if play:
     for i, gi in enumerate(np.linspace(0, GMAX, 38)):
@@ -189,7 +211,7 @@ with st.expander("Data source and caveats"):
               "Max soot volume fraction": [DATA[x]["soot"] for x in GS]})
     st.markdown("- Dotted lines are straight-line interpolation between 3 measured points. The real curve may not be a straight line.\n"
                 "- Values are in the units reported by the paper (relative units).\n"
-                "- Above 0.38 g there is no measured data in this tool.\n"
+                f"- Above {GMAX} g there is no measured data in this tool.\n"
                 "- All data come from controlled experiments, not real spacecraft fires.")
 
 with st.expander("Earth (1 g) reference - different experiments, not on the same scale"):
@@ -198,6 +220,8 @@ with st.expander("Earth (1 g) reference - different experiments, not on the same
         "([NASA NTRS](https://ntrs.nasa.gov/api/citations/20140017780/downloads/20140017780.pdf)).\n"
         "- Another jet-flame study reports about 2x higher maximum soot volume fraction at 0 g "
         "([NASA NTRS](https://ntrs.nasa.gov/api/citations/19970020584/downloads/19970020584.pdf)).\n"
+        "- The grey bar on the comparison chart turns this into 100/4 to 100/2, so about 25-50% of the 0 g value. "
+        "It is a range from other experiments, not a measurement from this dataset.\n"
         "- These are different fuels and burners from the flame-spread data above. "
         "They show the direction of the trend on Earth, not values for this chart."
     )
