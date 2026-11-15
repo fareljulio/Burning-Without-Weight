@@ -1,6 +1,6 @@
 _**Fire Behavior Across Gravity**_
 
-Live app: <add link> Demo video: <add link> Built for NASA Space Apps 2026, challenge: <add challenge name> Team: <add names>
+Live app: <add link> Demo video: <add link> Built for NASA Space Apps 2026, challenge: <add challenge name> Team: SAGUWW
 
 **Why we made this**
 
