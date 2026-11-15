@@ -14,7 +14,7 @@ DATA = {
 
 # If the paper has a measured 1 g row, fill it in here and it becomes a normal data point:
 # EARTH_ROW = {"residence": 0.0, "soot": 0.0}
-EARTH_ROW = None
+EARTH_ROW = {"residence": 0.0, "soot": 0.0}   # use the paper's real numbers
 if EARTH_ROW:
     DATA[1.0] = {**EARTH_ROW, "label": "Earth (1 g)"}
 
