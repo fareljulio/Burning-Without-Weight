@@ -26,7 +26,7 @@ They come from a research paper on flames in reduced gravity.
 | Moon | 0.16 g | 0.029 | 13.8 |
 | Mars | 0.38 g | 0.021 | 12.7 |
 
-Paper: <add title, link and DOI>
+Paper: "Smoke-point transition under partial gravity" (https://www.sciencedirect.com/science/article/pii/S1540748926003421)
 
 ## Things to know
 
